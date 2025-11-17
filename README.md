@@ -6,27 +6,6 @@ This repository is ideal for university lab submissions and learning purposes.
 
 ---
 
-## 📂 Folder Structure
-
-Algorithm-Lab/
-│
-├── Graph Algorithms/
-│   ├── bfs.cpp
-│   ├── dfs.cpp
-│   ├── dijkstra.cpp
-│   └── bellman_ford.cpp
-│
-├── Greedy Algorithms/
-│   ├── activity_selection.cpp
-│   └── fractional_knapsack.cpp
-│
-├── Dynamic Programming/
-│   └── zero_one_knapsack.cpp
-│
-└── README.md
-
----
-
 ## 🚀 Algorithms Included
 
 ### 1. BFS (Breadth-First Search)
@@ -139,6 +118,7 @@ Start Finish times:
 Shaikh Arefin Zaman  
 Department of Computer Science  
 Bangladesh University of Business and Technology
+
 GitHub username : ArefinZaman-dev
 
 ---
