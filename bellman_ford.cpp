@@ -1,40 +1,83 @@
-
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
-#define INF 1e9
 
-struct Edge {
-    int u, v, w;
-};
+vector<int> graph[200], cost[200];
+int dis[200], parent[200];
 
-int main() {
-    int nodes, edges;
-    cout << "Enter number of nodes and edges: ";
-    cin >> nodes >> edges;
-
-    vector<Edge> edgeList(edges);
-    cout << "Enter each edge (u v w):\n";
-    for(int i = 0; i < edges; i++) {
-        cin >> edgeList[i].u >> edgeList[i].v >> edgeList[i].w;
+void bellman_ford(int n, int source)
+{
+    for (int i = 1; i <= n; i++) {
+        dis[i] = 100000;
+        parent[i] = -1;
     }
 
-    int start;
-    cout << "Enter starting node: ";
-    cin >> start;
+    dis[source] = 0;
 
-    vector<int> dist(nodes + 1, INF);
-    dist[start] = 0;
+    // Relax edges n-1 times
+    for (int k = 0; k < n - 1; k++) {
+        for (int u = 1; u <= n; u++) {
+            for (int j = 0; j < graph[u].size(); j++) {
+                int v = graph[u][j];
+                int w = cost[u][j];
 
-    for(int i = 1; i < nodes; i++) {
-        for(auto e : edgeList) {
-            if(dist[e.u] + e.w < dist[e.v])
-                dist[e.v] = dist[e.u] + e.w;
+                if (dis[u] + w < dis[v]) {
+                    dis[v] = dis[u] + w;
+                    parent[v] = u;
+                }
+            }
         }
     }
+}
 
-    cout << "Shortest distances from node " << start << ":\n";
-    for(int i = 1; i <= nodes; i++)
-        cout << "Node " << i << ": " << dist[i] << endl;
+void printPath(int src, int des)
+{
+    if (des == -1) return;
+    if (src == des) {
+        cout << src << " ";
+        return;
+    }
+    printPath(src, parent[des]);
+    cout << des << " ";
+}
+
+int main()
+{
+    int n, m;
+    cout << "Enter the number of nodes: ";
+    cin >> n;
+
+    cout << "Enter number of edges: ";
+    cin >> m;
+
+    cout << "Enter edges (u v w):" << endl;
+    for (int i = 0; i < m; i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+
+        graph[u].push_back(v);
+        cost[u].push_back(w);
+    }
+
+    int source, destination;
+    cout << "Enter source node: ";
+    cin >> source;
+
+    cout << "Enter destination node: ";
+    cin >> destination;
+
+    bellman_ford(n, source);
+
+    if (dis[destination] >= 100000) {
+        cout << "No path exists!" << endl;
+        return 0;
+    }
+
+    cout << "Shortest distance from " << source << " to " << destination 
+         << " = " << dis[destination] << endl;
+
+    cout << "Path: ";
+    printPath(source, destination);
+    cout << endl;
 
     return 0;
 }
