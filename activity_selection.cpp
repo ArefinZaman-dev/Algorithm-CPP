@@ -1,29 +1,46 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct activity {
+    int start;
+    int finish;
+};
+
+bool comp(activity a1, activity a2) {
+    return a1.finish < a2.finish;   // Sort by finishing time
+}
+
+int maximumActivity(activity arr[], int len) {
+    sort(arr, arr + len, comp);     // Step 1: Sort
+
+    int total_activity = 1;         // Select first activity
+    int selected_index = 0;
+
+    for (int j = 1; j < len; j++) {
+        if (arr[j].start >= arr[selected_index].finish) {
+            total_activity++;
+            selected_index = j;
+        }
+    }
+
+    return total_activity;
+}
+
 int main() {
     int n;
     cout << "Enter number of activities: ";
     cin >> n;
 
-    vector<pair<int, int>> activities(n);
-    cout << "Enter start and finish time of each activity:\n";
-    for(int i = 0; i < n; i++)
-        cin >> activities[i].first >> activities[i].second;
+    activity arr[n];
 
-    sort(activities.begin(), activities.end(), [](auto a, auto b) {
-        return a.second < b.second;
-    });
-
-    cout << "Selected Activities Index (0-based): ";
-    int lastEnd = -1;
-    for(int i = 0; i < n; i++) {
-        if(activities[i].first >= lastEnd) {
-            cout << i << " ";
-            lastEnd = activities[i].second;
-        }
+    cout << "Enter start and finish time of each activity (s f):" << endl;
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i].start >> arr[i].finish;
     }
-    cout << endl;
+
+    int result = maximumActivity(arr, n);
+
+    cout << "Maximum number of activities = " << result << endl;
+
     return 0;
 }
-
