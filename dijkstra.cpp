@@ -1,54 +1,52 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
-#define INF 1e9
 
-vector<pair<int, int>> graph[100]; // (neighbor, weight)
+vector<int> graph[20], cost[20];
+int dis[20], parent[20];
 
-void Dijkstra(int start, int nodes) {
-    vector<int> dist(nodes + 1, INF);
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
-
-    dist[start] = 0;
-    pq.push({0, start});
-
-    while(!pq.empty()) {
-        int d = pq.top().first;
-        int u = pq.top().second;
+void dijkstra(int source, int n)
+{
+    priority_queue<pair<int, int> > pq;
+    for (int i = 0; i < n; i++) {
+        dis[i] = INT_MAX;
+        parent[i] = -1;
+    }
+    dis[source] = 0;
+    pq.push({-dis[source], source});
+    while (!pq.empty()) {
+        pair<int, int> node;
+        node = pq.top();
         pq.pop();
+        int u = node.second;
+        for (int i = 0; i < graph[u].size(); i++) {
+            int v = graph[u][i];
+            int w = cost[u][i];
 
-        if(d > dist[u]) continue;
-
-        for(auto edge : graph[u]) {
-            int v = edge.first, w = edge.second;
-            if(dist[u] + w < dist[v]) {
-                dist[v] = dist[u] + w;
-                pq.push({dist[v], v});
+            // Relaxation
+            if (dis[u] + w < dis[v]) {
+                dis[v] = dis[u] + w;
+                parent[v] = u;
+                pq.push({-dis[v], v});
             }
         }
     }
-
-    cout << "Shortest distances from node " << start << ":\n";
-    for(int i = 1; i <= nodes; i++)
-        cout << "Node " << i << ": " << dist[i] << endl;
 }
 
-int main() {
-    int nodes, edges;
-    cout << "Enter number of nodes and edges: ";
-    cin >> nodes >> edges;
-
-    cout << "Enter each edge (u v w):\n";
-    for(int i = 0; i < edges; i++) {
-        int u, v, w;
+int main()
+{
+    int n, m, u, v, w;
+    cout << "Enter the no. of vertex and edges : ";
+    cin >> n >> m;          // n = no of node, m = no of edge
+    cout << "Enter u v w for each edge : " << endl;
+    for (int i = 0; i < m; i++) {
         cin >> u >> v >> w;
-        graph[u].push_back({v, w});
+        graph[u].push_back(v);
+        cost[u].push_back(w);
     }
-
-    int start;
-    cout << "Enter starting node: ";
-    cin >> start;
-
-    Dijkstra(start, nodes);
+    dijkstra(0, n);
+    for (int i = 0; i < n; i++) {
+        cout << dis[i] << " ";
+    }
+    cout << endl;
     return 0;
 }
-
