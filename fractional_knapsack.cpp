@@ -1,41 +1,64 @@
-
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Item {
-    int value, weight;
+struct item {
+    int weight;
+    int profit;
+    float p_w;
 };
 
-bool compare(Item a, Item b) {
-    double ratioA = (double)a.value / a.weight;
-    double ratioB = (double)b.value / b.weight;
-    return ratioA > ratioB;
+bool comp(item i1, item i2) {
+    return i1.p_w > i2.p_w;   // Sort descending by profit/weight ratio
 }
 
-int main() {
-    int n, capacity;
-    cout << "Enter number of items and capacity: ";
-    cin >> n >> capacity;
+float fractional_knapsack(item item_list[], int len, int capacity) {
+    // Step 1: find profit/weight ratio
+    for (int i = 0; i < len; i++) {
+        item_list[i].p_w = (float)item_list[i].profit / item_list[i].weight;
+    }
 
-    vector<Item> items(n);
-    cout << "Enter value and weight of each item:\n";
-    for(int i = 0; i < n; i++)
-        cin >> items[i].value >> items[i].weight;
+    // Step 2: sort by p/w (descending)
+    sort(item_list, item_list + len, comp);
 
-    sort(items.begin(), items.end(), compare);
+    // Step 3: fill knapsack
+    int current_capacity = capacity;
+    float total_profit = 0;
 
-    double totalValue = 0;
-    for(auto item : items) {
-        if(capacity == 0) break;
-        if(item.weight <= capacity) {
-            totalValue += item.value;
-            capacity -= item.weight;
-        } else {
-            totalValue += ((double)item.value / item.weight) * capacity;
-            capacity = 0;
+    for (int i = 0; i < len; i++) {
+        if (item_list[i].weight <= current_capacity) {
+            total_profit += item_list[i].profit;
+            current_capacity -= item_list[i].weight;
+        }
+        else {
+            total_profit += (current_capacity * item_list[i].p_w);
+            current_capacity = 0;
+            break;
         }
     }
 
-    cout << "Maximum value: " << totalValue << endl;
+    return total_profit;
+}
+
+int main() {
+    int n;
+    cout << "Enter number of items: ";
+    cin >> n;
+
+    item item_list[n];
+
+    cout << "Enter weight & profit of each item (w p):" << endl;
+    for (int i = 0; i < n; i++) {
+        cin >> item_list[i].weight >> item_list[i].profit;
+        item_list[i].p_w = 0.0;
+    }
+
+    int capacity;
+    cout << "Enter knapsack capacity: ";
+    cin >> capacity;
+
+    float result = fractional_knapsack(item_list, n, capacity);
+
+    cout << "Maximum profit = " << result << endl;
+
     return 0;
 }
